@@ -10,6 +10,10 @@ const topicsColors = {
   'react-native': '#90E0EF'
 }
 
+type topicColors = {
+  name: 'reactjs' | 'nodejs' | 'unknown'
+}
+
 const topicFontColors = {
   reactjs: '#4361EE',
   nodejs: '#38B000',
@@ -66,8 +70,8 @@ export default async function Home() {
                                 className={`text-[10px] font-sans rounded p-1 font-bold`}
                                 style={
                                   {
-                                    color: `${topicFontColors[topic]}`,
-                                    backgroundColor: `${topicsColors[topic]}`
+                                    color: `${topicFontColors[topic as keyof typeof topicsColors]}`,
+                                    backgroundColor: `${topicsColors[topic as keyof typeof topicsColors]}`
                                   }
                                 }
                               >
