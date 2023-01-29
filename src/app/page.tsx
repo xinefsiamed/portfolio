@@ -1,91 +1,98 @@
-import Image from 'next/image'
-import { Inter } from '@next/font/google'
-import styles from './page.module.css'
+import { FormEvent } from 'react'
+import { About } from './components/About'
+import { ContactForm } from './components/ContactForm'
+import { Header } from './components/Header'
+import { MainContent } from './components/MainContent'
 
-const inter = Inter({ subsets: ['latin'] })
+const topicsColors = {
+  reactjs: '#4895EF',
+  nodejs: '#70E000',
+  'react-native': '#90E0EF'
+}
 
-export default function Home() {
+const topicFontColors = {
+  reactjs: '#4361EE',
+  nodejs: '#38B000',
+  'react-native': '#00B4D8'
+}
+
+interface Repository {
+  id: string,
+  name: string,
+  html_url: string,
+  homepage?: string
+  topics?: string[]
+}
+
+export default async function Home() {
+
+  const response = await fetch('https://api.github.com/users/xinefsiamed/repos', {
+    cache: 'force-cache',
+    next: {
+      revalidate: 60 * 60 * 24
+    }
+  })
+
+  const repositories: Repository[] = await response.json()
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <div>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-        <div className={styles.thirteen}>
-          <Image src="/thirteen.svg" alt="13" width={40} height={31} priority />
-        </div>
-      </div>
+      <Header />
+      <MainContent />
+      <About />
 
-      <div className={styles.grid}>
-        <a
-          href="https://beta.nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Find in-depth information about Next.js features and API.
-          </p>
+      <section id='projetos' className='h-screen bg-projetos_bg bg-cover bg-center'>
+        <div className='w-full h-full flex flex-col items-center backdrop-blur-sm gap-4'>
+          <h2 className='lg:text-4xl lg:mt-12 mt-8 text-2xl  text-center font-bold underline underline-offset-8 decoration-4 decoration-[#F72585] text-neutral-200'>Projetos</h2>
+
+
+          <div className='w-[80%] h-[80%] rounded-lg bg-white/80 mx-auto my-0  mt-5 flex flex-col lg:justify-center flex-wrap gap-2 lg:p-12 p-4 overflow-scroll no-scrollbar'>
+
+            {
+              repositories.map(repo => {
+                return (
+                  <a key={repo.id} href={repo.homepage ? repo.homepage : repo.html_url} className='hover:animate-pulse'>
+                    <div className='bg-white rounded-xl lg:w-[200px] lg:h-[150px] w-[140px] h-[120px] lg:p-4 p-1 shadow shadow-black/30 flex  flex-col justify-between'>
+                      <h3 className='text-[#560BAD] font-bold font-mono break-words text text-sm'>{repo.name}</h3>
+                      <footer>
+                        <p>Linguagens: </p>
+                        <div className='flex gap-1 justify-start flex-wrap'>
+                          {
+                            repo.topics &&
+                            repo.topics?.map((topic, index) =>
+                              <span
+                                key={`${topic}-${index}`}
+                                className={`text-[10px] font-sans rounded p-1 font-bold`}
+                                style={
+                                  {
+                                    color: `${topicFontColors[topic]}`,
+                                    backgroundColor: `${topicsColors[topic]}`
+                                  }
+                                }
+                              >
+                                {topic}
+                              </span>)}
+                        </div>
+                      </footer>
+                    </div>
+                  </a>
+                )
+              })
+            }
+
+
+          </div>
+        </div >
+      </section >
+
+      <ContactForm />
+
+      <footer className='p-5 bg-transparent absolute -translate-y-[100%]'>
+        <a href="" className='font-sans text-center text-white'>
+          Designed & Built by Leonardo Augusto
         </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      </footer>
+    </div >
   )
 }
