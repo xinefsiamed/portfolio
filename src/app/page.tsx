@@ -89,7 +89,7 @@ export default async function Home() {
       <ContactForm />
 
       <footer className='p-5 bg-transparent absolute -translate-y-[100%]'>
-        <a href="" className='font-sans text-center text-white'>
+        <a href="https://github.com/xinefsiamed/portifolio" className='font-sans text-center text-white'>
           Designed & Built by Leonardo Augusto
         </a>
       </footer>
