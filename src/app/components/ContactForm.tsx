@@ -4,15 +4,19 @@ import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form"
 
+interface FormData {
+  email: string,
+  name: string,
+  last_name: string,
+  message: string,
+}
+
 export function ContactForm() {
 
-  const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm();
+  const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm<FormData>();
   const [successMessage, setSuccessMessage] = useState("");
 
-  function onSubmit(data) {
-
-    console.log(data)
-
+  function onSubmit(data: FormData) {
     axios
       .post("https://eohlkh21dx7a2uw.m.pipedream.net", data)
       .then((response) => {
